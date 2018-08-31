@@ -28,3 +28,10 @@ def fibon(n):
         res.append(res[-2] + res[-1])
     return res
 
+if __name__ == "__main__":
+    print(fib(1))
+    print(fib(2))
+    print(fib(10))
+    print(fibon(0))
+    print(fibon(1))
+    print(fibon(10))
