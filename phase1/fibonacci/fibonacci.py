@@ -23,10 +23,11 @@ def fibon(n):
     if n == 0: return []
     if n == 1: return [0]
 
-    res = [0,1]
+    res = [0, 1]
     for i in range(2, n):
         res.append(res[-2] + res[-1])
     return res
+
 
 if __name__ == "__main__":
     print(fib(1))
