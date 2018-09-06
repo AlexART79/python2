@@ -3,7 +3,7 @@ import requests
 from ..jira import Jira
 from .fixtures.login_info import AuthInfo
 
-
+# login tests: valid login and pass/invalid login/invalid pass
 class TestLogin:
     @pytest.mark.parametrize("login_data", [AuthInfo("test", "test", 403),
                                             AuthInfo("Alexander_Artemov", "test", 401),

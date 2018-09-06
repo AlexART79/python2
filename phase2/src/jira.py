@@ -1,7 +1,7 @@
 import requests
 from .tests.fixtures.login_info import AuthInfo
 
-
+# class for JIRA manipulations
 class Jira:
     def __init__(self):
         self.__base_URL = "http://jira.hillel.it:8080/rest/"

@@ -3,7 +3,7 @@ import json
 
 from src.jira import Jira
 
-
+# class to store issue data for tests
 class IssueInfo:
     def __init__(self, project=None, summary=None, description=None, type=None, expected=None):
         self.project = {"key": project} if project is not None else False
@@ -25,11 +25,10 @@ class IssueInfo:
         if self.type:
             dict_asd["fields"]['issuetype'] = self.type
 
-        #return {"fields": {"project": {"key": self.project},"summary": self.summary,"description": self.description,"issuetype": {"name": self.type}}}
-
         return dict_asd
 
 
+# fixture to create issue before tests (for delete, update tests)
 @pytest.fixture
 def prep_issue():
     i = IssueInfo("AQAPYTHON", "AA004 - issue_to_be_deleted", "this is a test issue for delete test ", "Bug")

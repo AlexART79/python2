@@ -2,7 +2,7 @@ import pytest
 from ..jira import Jira
 from .fixtures.issue_info import IssueInfo, prep_issue
 
-
+# issue tests: create/update/delete
 class TestIssue:
     @pytest.mark.parametrize("issue_data", [IssueInfo(project="AQAPYTHON", description="this is a test issue. 01", type="Bug", expected=400),
                                             IssueInfo("AQAPYTHON", "AA001 - test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue 02", "this is an issue. 02", "Bug", 400),
@@ -15,7 +15,7 @@ class TestIssue:
         r = jira.create_issue(issue_data)
         assert r.status_code == issue_data.expected
 
-    # id of issue to delete is provided by fixture
+    # id of issue to delete is provided by 'prep_issue' fixture
     def test_delete_issue(self, prep_issue):
         jira = Jira()
         jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
@@ -25,7 +25,7 @@ class TestIssue:
 
         assert r.status_code == 204  # deleted
 
-    # id of issue to update is provided by fixture
+    # id of issue to update is provided by 'prep_issue' fixture
     def test_update_issue(self, prep_issue):
         jira = Jira()
         jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
