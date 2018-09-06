@@ -5,8 +5,9 @@ from .fixtures.issue_info import IssueInfo, prep_issue
 # issue tests: create/update/delete
 class TestIssue:
     @pytest.mark.parametrize("issue_data", [IssueInfo(project="AQAPYTHON", description="this is a test issue. 01", type="Bug", expected=400),
-                                            IssueInfo("AQAPYTHON", "AA001 - test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue 02", "this is an issue. 02", "Bug", 400),
-                                            IssueInfo("AQAPYTHON", "AA001 - test issue 03", "this is. 03", "Bug", 201)])
+                                            IssueInfo("AQAPYTHON", "", "this is issue with empty summary. 02", "Bug", 400),
+                                            IssueInfo("AQAPYTHON", "AA001 - test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue test issue 02", "this is an issue with looooong text in summary. 03", "Bug", 400),
+                                            IssueInfo("AQAPYTHON", "AA001 - test issue 03", "this is valid issue! 04", "Bug", 201)])
     def test_create_issue(self, issue_data):
         jira = Jira()
         jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
