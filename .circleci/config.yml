@@ -45,7 +45,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest phase2/ -v
+            pytest phase3/ -v -l --workers 4
 
       - store_artifacts:
           path: test-reports
