@@ -7,6 +7,8 @@ class Jira:
         self.__base_URL = "http://jira.hillel.it:8080/rest/"
         self.__auth_endpoint = "auth/1/session"
         self.__issue_endpoint = "api/2/issue"
+        self.__search_endpoint = "api/2/search"
+
         self.__session = requests.Session()
 
     #
@@ -20,6 +22,10 @@ class Jira:
     @property
     def issue_endpoint(self):
         return self.__base_URL + self.__issue_endpoint
+
+    @property
+    def search_endpoint(self):
+        return self.__base_URL + self.__search_endpoint
 
     #
     # Methods
@@ -42,4 +48,14 @@ class Jira:
 
     def delete_issue(self, key_id):
         r = self.__session.delete(self.issue_endpoint + "/" + key_id)
+        return r
+
+    def search_issues_p(self, jql):
+        #query = '?jql=' + jql
+        r = self.__session.post(self.search_endpoint, data=jql)
+        return r
+
+    def search_issues_g(self, jql):
+        query = '?jql=' + jql
+        r = self.__session.get(self.search_endpoint+query)
         return r

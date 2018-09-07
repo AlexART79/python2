@@ -1,4 +1,5 @@
 import pytest
+import json
 from ..jira import Jira
 from .fixtures.issue_info import IssueInfo, prep_issue
 
@@ -37,3 +38,22 @@ class TestIssue:
                 "description": "Description of UPDATED issue"
             }})
         assert r.status_code == 204 # updated
+
+    def test_search_issues(self, prep_issue):
+        jira = Jira()
+        jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
+
+        query = 'project=AQAPython AND type=Bug AND summary~"issue_to_be_deleted"'
+        r = jira.search_issues_g(query)
+        assert r.status_code == 200
+
+        data = json.loads(r.content)
+
+        # verify that we received more than 0 issues
+        assert data["total"] > 0
+
+        # verify received data
+        for issue in data["issues"]:
+            assert "issue_to_be_deleted" in issue["fields"]["summary"]  # summary contains desired substring
+            assert issue["fields"]["project"]["name"] == 'AQAPython'    # project is AQAPython
+            assert issue["fields"]["issuetype"]["name"] == 'Bug'        # issue type is Bug
