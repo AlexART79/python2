@@ -40,8 +40,8 @@ class GeneralPage(BasePage):
         if self.aui_message_is_displayed:
             e = self.aui_message_container.find_element(GeneralPage.aui_message_issue_link_locator)
             return e.text[:e.text.index(' ')]
-
-        return ""
+        else:
+            return None
 
     @property
     def aui_message_is_displayed(self):

@@ -33,11 +33,12 @@ class IssueInfo:
 def prep_issues():
     keys = []
     issues = [
-         IssueInfo("AQAPYTHON", "AA001 - issue_to_be_found", "this is a test issue for delete test ", "Story"),
-         IssueInfo("AQAPYTHON", "AA002 - issue_to_be_found", "this is a test issue for delete test ", "Bug"),
-         IssueInfo("AQAPYTHON", "AA003 - issue_to_be_found", "this is a test issue for delete test ", "Bug"),
-         IssueInfo("AQAPYTHON", "AA004 - issue_to_be_found", "this is a test issue for delete test ", "Bug"),
-         IssueInfo("AQAPYTHON", "AA005 - issue_to_be_found", "this is a test issue for delete test ", "Bug")]
+         IssueInfo("AQAPYTHON", "AA001 - issue_to_be_found", "this is a test issue for delete/update test", "Story"),
+         IssueInfo("AQAPYTHON", "AA002 - issue_to_be_found", "this is a test issue for delete/update test", "Bug"),
+         IssueInfo("AQAPYTHON", "AA003 - issue_to_be_found", "this is a test issue for delete/update test", "Bug"),
+         IssueInfo("AQAPYTHON", "AA004 - issue_to_be_found", "this is a test issue for delete/update test", "Bug"),
+         IssueInfo("AQAPYTHON", "AA005 - issue_to_be_found", "this is a test issue for delete/update test", "Bug")]
+
     jira = Jira()
     jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
 
@@ -50,3 +51,21 @@ def prep_issues():
 
     for k in keys:
         jira.delete_issue(k)
+
+@pytest.fixture
+def prep_issue():
+    key = None
+
+    ii = IssueInfo("AQAPYTHON", "AA006 - issue_to_be_updated", "this is a test issue for delete/update test", "Bug")
+
+    jira = Jira()
+    jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
+
+    r = jira.create_issue(ii)
+    data = json.loads(r.content)
+    key = data["key"]
+
+    yield key
+
+    if key:
+        jira.delete_issue(key)

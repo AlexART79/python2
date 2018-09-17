@@ -5,7 +5,7 @@ from src.DriverManager import DriverManager
 from src.pages.login_page import LoginPage
 from src.pages.general_page import GeneralPage, DashboardPage, IssuesSearchPage
 from ..rest.jira import Jira
-from ..rest.issue_info import prep_issues
+from ..rest.issue_info import prep_issues, prep_issue
 
 @pytest.fixture
 def driver():
@@ -47,14 +47,14 @@ class TestLogin(BaseTest):
 class TestIssues(BaseTest):
     issues = []
 
-    @classmethod
-    def teardown_class(cls):
-        if cls.issues:
+    def teardown_method(self, method):
+        if TestIssues.issues:
             jira = Jira()
             jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
-            for issue in cls.issues:
+            for issue in TestIssues.issues:
                 r = jira.delete_issue(issue)
                 assert r.status_code == 204
+            TestIssues.issues = []
 
     @pytest.mark.parametrize("issue_data", [{"summary": "", "type": "Bug"},
                                             {"summary": "AlexART - " + "".join([str(x) for x in range(255)]),
@@ -88,7 +88,8 @@ class TestIssues(BaseTest):
         assert dashboard_page.aui_message_is_displayed
 
         # save issue ID/Key for further cleanup
-        TestIssues.issues.append(issue_key)
+        if issue_key:
+            TestIssues.issues.append(issue_key)
 
     @pytest.mark.parametrize("search_data", [{"jql": "creator=currentUser()", "res": 5},
                                              {"jql": "creator=currentUser() AND issuetype = Story", "res": 1},
@@ -107,7 +108,7 @@ class TestIssues(BaseTest):
 
         assert len(sp.found_issues) == search_data["res"]
 
-    def test_update_issue(self, driver, prep_issues):
+    def test_update_issue(self, driver, prep_issue):
         login_page = LoginPage(driver)
         login_page.go("http://jira.hillel.it:8080/")
         login_page.login("Alexander_Artemov", "Alexander_Artemov")
@@ -118,9 +119,9 @@ class TestIssues(BaseTest):
         sp = IssuesSearchPage(driver)
 
         sp.search("creator=currentUser() AND issuetype = Bug")
-        assert len(sp.found_issues) == 4
+        assert len(sp.found_issues) == 1
 
-        sp.found_issues[2].select()
+        sp.found_issues[0].select()
 
         sp.update(**{"summary": "AlexART - issue_edited_from_ui", "priority": "High"})
         sleep(10)
