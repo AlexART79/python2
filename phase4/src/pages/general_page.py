@@ -31,6 +31,8 @@ class GeneralPage(BasePage):
 
     def create_issue(self, summary, type="Bug", description="", priority="Low"):
         self.create_issue_link.click()
+        self.create_issue_dialog.wait_for_display(10)
+
         self.create_issue_dialog.issue_type = type
         self.create_issue_dialog.summary = summary
         self.create_issue_dialog.description = description

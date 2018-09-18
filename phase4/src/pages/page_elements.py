@@ -65,9 +65,9 @@ class InputElement(Element):
 
     @value.setter
     def value(self, val):
-        e = self.wait_to_be_enabled(10)
-        e.clear()
-        e.send_keys(val)
+        self.wait_to_be_enabled(10)
+        self.find().clear()
+        self.find().send_keys(val)
 
 
 class TinyMceEditor(Element):
@@ -142,7 +142,6 @@ class IssueDetails(Element):
         self.priority_val = Element(self.driver, IssueDetails.priority_val_locator)
 
     def open_edit(self):
-        #self.edit_link.wait_to_be_enabled()
         sleep(5)
         self.edit_link.click()
 
@@ -214,6 +213,7 @@ class CreateEditIssueDialog(Element):
     @property
     def error_message_is_displayed(self):
         try:
+            sleep(2)
             return self.create_issue_error.is_displayed
         except TimeoutException:
             return False

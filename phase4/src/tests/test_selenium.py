@@ -13,6 +13,14 @@ def driver():
     yield d
     d.quit()
 
+
+@pytest.fixture
+def jira_rest():
+    j = Jira()
+    j.authenticate("Alexander_Artemov", "Alexander_Artemov")
+    yield j
+
+
 class BaseTest:
     pass
 
@@ -45,16 +53,16 @@ class TestLogin(BaseTest):
 
 
 class TestIssues(BaseTest):
-    issues = []
+    #issues = []
 
-    def teardown_method(self, method):
-        if TestIssues.issues:
-            jira = Jira()
-            jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
-            for issue in TestIssues.issues:
-                r = jira.delete_issue(issue)
-                assert r.status_code == 204
-            TestIssues.issues = []
+#    def teardown_method(self, method):
+#        if TestIssues.issues:
+#            jira = Jira()
+#            jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
+#            for issue in TestIssues.issues:
+#                r = jira.delete_issue(issue)
+#                assert r.status_code == 204
+#            TestIssues.issues = []
 
     @pytest.mark.parametrize("issue_data", [{"summary": "", "type": "Bug"},
                                             {"summary": "AlexART - " + "".join([str(x) for x in range(255)]),
@@ -75,7 +83,7 @@ class TestIssues(BaseTest):
                                              "description": "this is a test Story"},
                                             {"summary": "AlexART - Test Bug", "type": "Bug",
                                              "description": "this is a test Bug", "priority": "Medium"}])
-    def test_create_issue_positive(self, issue_data, driver):
+    def test_create_issue_positive(self, issue_data, driver, jira_rest):
         # login
         login_page = LoginPage(driver)
         login_page.go("http://jira.hillel.it:8080/")
@@ -85,11 +93,12 @@ class TestIssues(BaseTest):
         dashboard_page = GeneralPage(driver)
         issue_key = dashboard_page.create_issue(**issue_data)
 
-        assert dashboard_page.aui_message_is_displayed
+        # assert dashboard_page.aui_message_is_displayed
+        assert issue_key is not None
 
         # save issue ID/Key for further cleanup
         if issue_key:
-            TestIssues.issues.append(issue_key)
+            jira_rest.delete_issue(issue_key)        # TestIssues.issues.append(issue_key)
 
     @pytest.mark.parametrize("search_data", [{"jql": "creator=currentUser()", "res": 5},
                                              {"jql": "creator=currentUser() AND issuetype = Story", "res": 1},
