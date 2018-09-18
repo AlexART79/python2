@@ -126,5 +126,3 @@ class TestIssues(BaseTest):
         sp.update(**{"summary": "AlexART - issue_edited_from_ui", "priority": "High"})
         sleep(10)
         assert "AlexART - issue_edited_from_ui" == sp.issue_details.summary
-
-
