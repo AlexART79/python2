@@ -6,12 +6,12 @@ from .page_elements import *
 
 
 class LoginPage(BasePage):
-    login_form_username = (By.ID, "login-form-username")
-    login_form_password = (By.ID, "login-form-password")
-    login_form_login_btn = (By.ID, "login")
+    login_form_username = (By.XPATH, "//input[@id='login-form-username']")
+    login_form_password = (By.XPATH, "//input[@id='login-form-password']")
+    login_form_login_btn = (By.XPATH, "//*[@id='login']")
 
-    login_form_error = (By.ID, "usernameerror")
-    login_form_error_message = (By.CSS_SELECTOR, "#usernameerror p")
+    login_form_error = (By.XPATH, "//*[@id='usernameerror']")
+    login_form_error_message = (By.XPATH, "//*[@id='usernameerror']//p")
 
     def __init__(self, driver):
         BasePage.__init__(self, driver)

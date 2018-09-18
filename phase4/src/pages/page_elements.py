@@ -54,8 +54,14 @@ class Element(object):
     def wait_for_display(self, timeout=30):
         return WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(self.locator))
 
+    def wait_to_be_hidden(self, timeout=30):
+        return WebDriverWait(self.driver, timeout).until(EC.invisibility_of_element_located(self.locator))
+
     def wait_to_be_enabled(self, timeout=30):
         return WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(self.locator))
+
+    def wait_for_removal(self, timeout=30):
+        return WebDriverWait(self.driver, timeout).until_not(EC.presence_of_element_located(self.locator))
 
 
 class InputElement(Element):
@@ -65,7 +71,7 @@ class InputElement(Element):
 
     @value.setter
     def value(self, val):
-        self.wait_to_be_enabled(10)
+        sleep(5)
         self.find().clear()
         self.find().send_keys(val)
 
@@ -94,7 +100,9 @@ class SingleSelectElement(Element):
     def __init__(self, driver, locator):
         Element.__init__(self, driver, locator)
 
-        self.input_locator = (By.TAG_NAME, "input")
+        by, loc_str = locator
+        input_locator = (by, loc_str+"/input")
+        self.input_element = InputElement(self.driver, input_locator)
 
     @property
     def value(self):
@@ -102,11 +110,12 @@ class SingleSelectElement(Element):
 
     @value.setter
     def value(self, val):
-        e = self.find().find_element(*self.input_locator)
-        e.click()
-        e.clear()
-        e.send_keys(val)
-        e.send_keys(Keys.RETURN)
+        e = self.input_element.wait_to_be_enabled()
+        if e:
+            e.click()
+            e.clear()
+            e.send_keys(val)
+            e.send_keys(Keys.RETURN)
 
 
 class IssueListItem:
@@ -151,12 +160,12 @@ class IssueDetails(Element):
 
 
 class CreateEditIssueDialog(Element):
-    project_select_locator = (By.ID, "project-single-select")
+    project_select_locator = (By.XPATH, "//*[@id='project-single-select']")
 
-    issue_type_select_locator = (By.ID, "issuetype-single-select")
-    summary_locator = (By.ID, "summary")
-    description_iframe_locator = (By.CSS_SELECTOR, "#description-wiki-edit iframe")
-    issue_priority_select_locator = (By.ID, "priority-single-select")
+    issue_type_select_locator = (By.XPATH, "//*[@id='issuetype-single-select']")
+    summary_locator = (By.XPATH, "//*[@id='summary']")
+    description_iframe_locator = (By.XPATH, "//*[@id='description-wiki-edit']//iframe")
+    issue_priority_select_locator = (By.XPATH, "//*[@id='priority-single-select']")
 
     submit_locator = (By.CSS_SELECTOR, ".jira-dialog input[type='Submit']")
 
@@ -165,7 +174,7 @@ class CreateEditIssueDialog(Element):
     def __init__(self, driver, locator):
         Element.__init__(self, driver, locator)
 
-        self.project_select = Element(self.driver, CreateEditIssueDialog.project_select_locator)
+        self.project_select = SingleSelectElement(self.driver, CreateEditIssueDialog.project_select_locator)
         self.type_select = SingleSelectElement(self.driver, CreateEditIssueDialog.issue_type_select_locator)
         self.summary_text = InputElement(self.driver, CreateEditIssueDialog.summary_locator)
         self.description_element = TinyMceEditor(self.driver, CreateEditIssueDialog.description_iframe_locator)
@@ -173,6 +182,14 @@ class CreateEditIssueDialog(Element):
         self.submit_btn = Element(self.driver, CreateEditIssueDialog.submit_locator)
 
         self.create_issue_error = Element(self.driver, CreateEditIssueDialog.create_issue_error_locator)
+
+    @property
+    def project(self):
+        return self.project_select.value
+
+    @project.setter
+    def project(self, value):
+        self.project_select.value = value
 
     @property
     def issue_type(self):

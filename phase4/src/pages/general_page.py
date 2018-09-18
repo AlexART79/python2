@@ -10,14 +10,14 @@ from src.pages.page_elements import Element, InputElement, IssueListItem, IssueD
 
 
 class GeneralPage(BasePage):
-    create_issue_link = (By.ID, "create_link")
-    issues_menu_link = (By.ID, "find_link")
-    issues_menu_dropdown = (By.ID, "find_link-content")
-    issues_menu_item_search = (By.LINK_TEXT, "Search for issues")
-    create_issue_dialog_locator = (By.ID, "create-issue-dialog")
+    create_issue_link = (By.XPATH, "//*[@id='create_link']")
+    issues_menu_link = (By.XPATH, "//*[@id='find_link']")
+    issues_menu_dropdown = (By.XPATH, "//*[@id='find_link-content']")
+    issues_menu_item_search = (By.XPATH, "//a[text()='Search for issues']")
+    create_issue_dialog_locator = (By.XPATH, "//*[@id='create-issue-dialog']")
 
-    aui_message_container_locator = (By.ID, "aui-flag-container")
-    aui_message_issue_link_locator = (By.CSS_SELECTOR, "#aui-flag-container a")
+    aui_message_container_locator = (By.XPATH, "//*[@id='aui-flag-container']")
+    aui_message_issue_link_locator = (By.XPATH, "//*[@id='aui-flag-container']//a")
 
     def __init__(self, driver):
         BasePage.__init__(self, driver)
@@ -29,10 +29,11 @@ class GeneralPage(BasePage):
         self.create_issue_dialog = CreateEditIssueDialog(self.driver, GeneralPage.create_issue_dialog_locator)
         self.aui_message_container = Element(self.driver, GeneralPage.aui_message_container_locator)
 
-    def create_issue(self, summary, type="Bug", description="", priority="Low"):
+    def create_issue(self, project, summary, type="Bug", description="", priority="Low"):
         self.create_issue_link.click()
         self.create_issue_dialog.wait_for_display(10)
 
+        self.create_issue_dialog.project = project
         self.create_issue_dialog.issue_type = type
         self.create_issue_dialog.summary = summary
         self.create_issue_dialog.description = description
@@ -40,7 +41,7 @@ class GeneralPage(BasePage):
         self.create_issue_dialog.submit()
 
         if self.aui_message_is_displayed:
-            e = self.aui_message_container.find_element(GeneralPage.aui_message_issue_link_locator)
+            e = Element(self.driver, GeneralPage.aui_message_issue_link_locator)
             return e.text[:e.text.index(' ')]
         else:
             return None
@@ -64,10 +65,12 @@ class DashboardPage(GeneralPage):
 
 
 class IssuesSearchPage(GeneralPage):
-    advanced_search = (By.ID, "advanced-search")
-    issue_list_locator = (By.CSS_SELECTOR, "ol.issue-list")
-    issue_content_locator = (By.ID, "issue-content")
-    edit_issue_dialog_locator = (By.ID, "edit-issue-dialog")
+    advanced_search = (By.XPATH, "//*[@id='advanced-search']")
+    issue_list_locator = (By.XPATH, "//ol[contains(@class, 'issue-list')]")
+    issue_content_locator = (By.XPATH, "//*[@id='issue-content']")
+    edit_issue_dialog_locator = (By.XPATH, "//*[@id='edit-issue-dialog']")
+
+    loading_locator = (By.XPATH, "//div[@class='loading']")
 
     def __init__(self, driver):
         GeneralPage.__init__(self, driver)
@@ -77,16 +80,21 @@ class IssuesSearchPage(GeneralPage):
         self.issue_details = IssueDetails(self.driver, IssuesSearchPage.issue_content_locator)
         self.edit_issue_dialog = CreateEditIssueDialog(self.driver, IssuesSearchPage.edit_issue_dialog_locator)
 
+        self.loading_indicator = Element(self.driver, IssuesSearchPage.loading_locator)
+
+    def wait_for_loading(self, timeout=30):
+        self.loading_indicator.wait_to_be_hidden()
+        self.loading_indicator.wait_for_removal()
+
     def search(self, jql):
         self.search_field.value = jql
         self.search_field.send_keys(Keys.RETURN)
 
-        # wait for display
-        sleep(10)
+        self.wait_for_loading()
 
     def update(self, summary=None, type=None, priority=None, description=None):
         self.issue_details.open_edit()
-        sleep(10)
+        self.edit_issue_dialog.wait_for_display(10)
 
         if summary:
             self.edit_issue_dialog.summary = summary
@@ -98,16 +106,21 @@ class IssuesSearchPage(GeneralPage):
             self.edit_issue_dialog.description = description
 
         self.edit_issue_dialog.submit()
+        self.aui_message_container.wait_for_display(10)
 
     @property
     def found_issues(self):
         l = []
 
-        # if list is displayed, collect items and return the list
-        if self.issue_list.is_displayed:
-            # find all list items
-            items = self.issue_list.find_elements((By.TAG_NAME, "li"))
-            for item in items:
-                l.append(IssueListItem(self.driver, item))
+        try:
+            # if list is displayed, collect items and return the list
+            if self.issue_list.is_displayed:
+                # find all list items
+                items = self.issue_list.find_elements((By.TAG_NAME, "li"))
+                for item in items:
+                    l.append(IssueListItem(self.driver, item))
+        except TimeoutException:
+            # list is not displayed, no items
+            pass
 
         return l

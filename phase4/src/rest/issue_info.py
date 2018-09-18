@@ -33,11 +33,11 @@ class IssueInfo:
 def prep_issues():
     keys = []
     issues = [
-         IssueInfo("AQAPYTHON", "AlexART - issue_to_be_found 1", "this is a test issue for delete/update test", "Story"),
-         IssueInfo("AQAPYTHON", "AlexART - issue_to_be_found 2", "this is a test issue for delete/update test", "Bug"),
-         IssueInfo("AQAPYTHON", "AlexART - issue_to_be_found 3", "this is a test issue for delete/update test", "Bug"),
-         IssueInfo("AQAPYTHON", "AlexART - issue_to_be_found 4", "this is a test issue for delete/update test", "Bug"),
-         IssueInfo("AQAPYTHON", "AlexART - issue_to_be_found 5", "this is a test issue for delete/update test", "Bug")]
+         IssueInfo("AQAPYTHON", "AA_issue_to_find 1", "this is a test issue for delete/update test", "Story"),
+         IssueInfo("AQAPYTHON", "AA_issue_to_find 2", "this is a test issue for delete/update test", "Bug"),
+         IssueInfo("AQAPYTHON", "AA_issue_to_find 3", "this is a test issue for delete/update test", "Bug"),
+         IssueInfo("AQAPYTHON", "AA_issue_to_find 4", "this is a test issue for delete/update test", "Bug"),
+         IssueInfo("AQAPYTHON", "AA_issue_to_find 5", "this is a test issue for delete/update test", "Bug")]
 
     jira = Jira()
     jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
@@ -56,7 +56,7 @@ def prep_issues():
 def prep_issue():
     key = None
 
-    ii = IssueInfo("AQAPYTHON", "AlexART - issue_to_be_updated 1", "this is a test issue for delete/update test", "Bug")
+    ii = IssueInfo("AQAPYTHON", "AA_issue_to_update 1", "this is a test issue for delete/update test", "Bug")
 
     jira = Jira()
     jira.authenticate("Alexander_Artemov", "Alexander_Artemov")

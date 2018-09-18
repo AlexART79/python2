@@ -1,3 +1,4 @@
+import json
 from time import sleep
 
 import pytest
@@ -7,6 +8,21 @@ from src.pages.general_page import GeneralPage, DashboardPage, IssuesSearchPage
 from ..rest.jira import Jira
 from ..rest.issue_info import prep_issues, prep_issue
 
+
+# cleanup before test (remove leftovers from previous runs, if exists)
+def setup_module(module):
+    j = Jira()
+    j.authenticate("Alexander_Artemov", "Alexander_Artemov")
+
+    r = j.search_issues_g("creator = currentUser()")
+    data = json.loads(r.content)
+
+    # verify received data
+    for issue in data["issues"]:
+        j.delete_issue(issue["key"])
+
+
+# driver setup and teardown
 @pytest.fixture
 def driver():
     d = DriverManager.chrome_driver()
@@ -14,6 +30,7 @@ def driver():
     d.quit()
 
 
+# rest-client setup and teardown
 @pytest.fixture
 def jira_rest():
     j = Jira()
@@ -53,16 +70,16 @@ class TestLogin(BaseTest):
 
 
 class TestIssues(BaseTest):
-    #issues = []
+    issues = []
 
-#    def teardown_method(self, method):
-#        if TestIssues.issues:
-#            jira = Jira()
-#            jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
-#            for issue in TestIssues.issues:
-#                r = jira.delete_issue(issue)
-#                assert r.status_code == 204
-#            TestIssues.issues = []
+    def teardown_method(self, method):
+        if TestIssues.issues:
+            jira = Jira()
+            jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
+            for issue in TestIssues.issues:
+                r = jira.delete_issue(issue)
+                assert r.status_code == 204
+            TestIssues.issues = []
 
     @pytest.mark.parametrize("issue_data", [{"summary": "", "type": "Bug"},
                                             {"summary": "AlexART - " + "".join([str(x) for x in range(255)]),
@@ -79,9 +96,9 @@ class TestIssues(BaseTest):
 
         assert dashboard_page.create_issue_dialog.error_message_is_displayed
 
-    @pytest.mark.parametrize("issue_data", [{"summary": "AlexART - Test Story", "type": "Story",
+    @pytest.mark.parametrize("issue_data", [{"project": "AQAPython (AQAPYTHON)", "summary": "AlexART - Test Story", "type": "Story",
                                              "description": "this is a test Story"},
-                                            {"summary": "AlexART - Test Bug", "type": "Bug",
+                                            {"project": "AQAPython (AQAPYTHON)", "summary": "AlexART - Test Bug", "type": "Bug",
                                              "description": "this is a test Bug", "priority": "Medium"}])
     def test_create_issue_positive(self, issue_data, driver, jira_rest):
         # login
@@ -98,11 +115,11 @@ class TestIssues(BaseTest):
 
         # save issue ID/Key for further cleanup
         if issue_key:
-            jira_rest.delete_issue(issue_key)        # TestIssues.issues.append(issue_key)
+            TestIssues.issues.append(issue_key)
 
-    @pytest.mark.parametrize("search_data", [{"jql": "summary~'AlexART - issue_to_be_found'", "res": 5},
-                                             {"jql": "summary~'AlexART - issue_to_be_found' AND issuetype = Story", "res": 1},
-                                             {"jql": "summary~'AlexART - issue_to_be_found' AND issuetype = Epic", "res": 0}])
+    @pytest.mark.parametrize("search_data", [{"jql": "summary~'AA_issue_to_find'", "res": 5},
+                                             {"jql": "summary~'AA_issue_to_find' AND issuetype = Story", "res": 1},
+                                             {"jql": "summary~'AA_issue_to_find' AND issuetype = Epic", "res": 0}])
     def test_search_issues(self, search_data, driver, prep_issues):
         login_page = LoginPage(driver)
         login_page.go("http://jira.hillel.it:8080/")
@@ -127,11 +144,12 @@ class TestIssues(BaseTest):
 
         sp = IssuesSearchPage(driver)
 
-        sp.search("creator=currentUser() AND issuetype = Bug")
+        sp.search("summary~'AA_issue_to_update' AND issuetype = Bug")
+        sleep(3)
         assert len(sp.found_issues) == 1
 
         sp.found_issues[0].select()
 
         sp.update(**{"summary": "AlexART - issue_edited_from_ui", "priority": "High"})
-        sleep(10)
+
         assert "AlexART - issue_edited_from_ui" == sp.issue_details.summary
