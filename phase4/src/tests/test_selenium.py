@@ -100,9 +100,9 @@ class TestIssues(BaseTest):
         if issue_key:
             jira_rest.delete_issue(issue_key)        # TestIssues.issues.append(issue_key)
 
-    @pytest.mark.parametrize("search_data", [{"jql": "creator=currentUser()", "res": 5},
-                                             {"jql": "creator=currentUser() AND issuetype = Story", "res": 1},
-                                             {"jql": "creator = currentUser() AND issuetype = Epic", "res": 0}])
+    @pytest.mark.parametrize("search_data", [{"jql": "summary~'AlexART - issue_to_be_found'", "res": 5},
+                                             {"jql": "summary~'AlexART - issue_to_be_found' AND issuetype = Story", "res": 1},
+                                             {"jql": "summary~'AlexART - issue_to_be_found' AND issuetype = Epic", "res": 0}])
     def test_search_issues(self, search_data, driver, prep_issues):
         login_page = LoginPage(driver)
         login_page.go("http://jira.hillel.it:8080/")
