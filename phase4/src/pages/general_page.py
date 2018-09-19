@@ -82,9 +82,9 @@ class IssuesSearchPage(GeneralPage):
 
         self.loading_indicator = Element(self.driver, IssuesSearchPage.loading_locator)
 
-    def wait_for_loading(self, timeout=30):
+    def wait_for_loading(self, timeout=60):
         self.loading_indicator.wait_to_be_hidden(timeout)
-        sleep(3)
+        sleep(5)
 
     def search(self, jql):
         self.search_field.value = jql
@@ -94,7 +94,7 @@ class IssuesSearchPage(GeneralPage):
 
     def update(self, summary=None, type=None, priority=None, description=None):
         self.issue_details.open_edit()
-        self.edit_issue_dialog.wait_to_be_displayed(10)
+        self.edit_issue_dialog.wait_to_be_displayed()
 
         if summary:
             self.edit_issue_dialog.summary = summary
@@ -107,7 +107,7 @@ class IssuesSearchPage(GeneralPage):
 
         self.edit_issue_dialog.submit()
         self.aui_message_container.wait_to_be_displayed(10)
-        sleep(3)
+        sleep(5)
 
     @property
     def found_issues(self):

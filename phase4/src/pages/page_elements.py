@@ -51,16 +51,16 @@ class Element(object):
     def send_keys(self, value):
         self.find().send_keys(value)
 
-    def wait(self, cond, timeout=30):
+    def wait(self, cond, timeout=60):
         return WebDriverWait(self.driver, timeout).until(cond)
 
-    def wait_to_be_displayed(self, timeout=30):
+    def wait_to_be_displayed(self, timeout=60):
         return self.wait(EC.visibility_of_element_located(self.locator), timeout)
 
-    def wait_to_be_hidden(self, timeout=30):
+    def wait_to_be_hidden(self, timeout=60):
         return self.wait(EC.invisibility_of_element_located(self.locator), timeout)
 
-    def wait_to_be_enabled(self, timeout=30):
+    def wait_to_be_enabled(self, timeout=60):
         return self.wait(EC.element_to_be_clickable(self.locator), timeout)
 
 
@@ -151,7 +151,7 @@ class IssueDetails(Element):
         self.priority_val = Element(self.driver, IssueDetails.priority_val_locator)
 
     def open_edit(self):
-        sleep(5)
+        # sleep(5)
         self.edit_link.click()
 
     @property
@@ -224,13 +224,13 @@ class CreateEditIssueDialog(Element):
         self.issue_priority.value = value
 
     def submit(self):
-        self.submit_btn.wait_to_be_enabled(10)
+        self.submit_btn.wait_to_be_enabled()
         self.submit_btn.click()
 
     @property
     def error_message_is_displayed(self):
         try:
-            self.create_issue_error.wait_to_be_displayed(10)
+            self.create_issue_error.wait_to_be_displayed()
             return self.create_issue_error.is_displayed
         except TimeoutException:
             return False

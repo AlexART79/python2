@@ -17,7 +17,7 @@ def setup_module(module):
     r = j.search_issues_g("creator = currentUser()")
     data = json.loads(r.content)
 
-    # verify received data
+    # delete previously created issues (if found)
     for issue in data["issues"]:
         j.delete_issue(issue["key"])
 
