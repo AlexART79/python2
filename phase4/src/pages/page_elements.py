@@ -51,14 +51,17 @@ class Element(object):
     def send_keys(self, value):
         self.find().send_keys(value)
 
-    def wait_for_display(self, timeout=30):
-        return WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(self.locator))
+    def wait(self, cond, timeout=30):
+        return WebDriverWait(self.driver, timeout).until(cond)
+
+    def wait_to_be_displayed(self, timeout=30):
+        return self.wait(EC.visibility_of_element_located(self.locator), timeout)
 
     def wait_to_be_hidden(self, timeout=30):
-        return WebDriverWait(self.driver, timeout).until(EC.invisibility_of_element_located(self.locator))
+        return self.wait(EC.invisibility_of_element_located(self.locator), timeout)
 
     def wait_to_be_enabled(self, timeout=30):
-        return WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(self.locator))
+        return self.wait(EC.element_to_be_clickable(self.locator), timeout)
 
 
 class InputElement(Element):
@@ -227,7 +230,7 @@ class CreateEditIssueDialog(Element):
     @property
     def error_message_is_displayed(self):
         try:
-            sleep(2)
+            self.create_issue_error.wait_to_be_displayed(10)
             return self.create_issue_error.is_displayed
         except TimeoutException:
             return False

@@ -9,9 +9,9 @@ class LoginPage(BasePage):
     login_form_username = (By.XPATH, "//input[@id='login-form-username']")
     login_form_password = (By.XPATH, "//input[@id='login-form-password']")
     login_form_login_btn = (By.XPATH, "//*[@id='login']")
+    login_form_error_message = (By.XPATH, "//div[@id='usernameerror']/p")
 
-    login_form_error = (By.XPATH, "//*[@id='usernameerror']")
-    login_form_error_message = (By.XPATH, "//*[@id='usernameerror']//p")
+    details_user_fullname = (By.XPATH, "//a[@id='header-details-user-fullname']")
 
     def __init__(self, driver):
         BasePage.__init__(self, driver)
@@ -26,18 +26,20 @@ class LoginPage(BasePage):
 
         self.login_btn.click()
 
-    def is_login_success(self):
+    @property
+    def is_logged_in(self):
         try:
-            w = WebDriverWait(self.driver, 10).until(
-                EC.visibility_of_element_located(LoginPage.login_form_error))
+            details_user_fullname = WebDriverWait(self.driver, 30).until(
+                EC.visibility_of_element_located(LoginPage.details_user_fullname))
 
-            return not w.is_displayed()
+            return details_user_fullname.is_displayed()
         except TimeoutException:
-            return True
+            return False
 
-    def get_login_error_message(self):
+    @property
+    def login_error_message(self):
         try:
-            w = WebDriverWait(self.driver, 10).until(
+            w = WebDriverWait(self.driver, 30).until(
                 EC.visibility_of_element_located(LoginPage.login_form_error_message))
 
             return w.text

@@ -51,22 +51,16 @@ class TestLogin(BaseTest):
     def test_login_incorrect(self, login_data, driver):
         login_page = LoginPage(driver)
         login_page.go("http://jira.hillel.it:8080/")
-
-        assert login_page.is_title_contains("Hillel")
-
         login_page.login(*login_data)
 
-        assert not login_page.is_login_success()
-        assert "your username and password are incorrect" in login_page.get_login_error_message()
+        assert "your username and password are incorrect" in login_page.login_error_message
 
     def test_login_correct(self, driver):
         login_page = LoginPage(driver)
         login_page.go("http://jira.hillel.it:8080/")
 
-        assert login_page.is_title_contains("Hillel")
-
         login_page.login("Alexander_Artemov", "Alexander_Artemov")
-        assert login_page.is_login_success()
+        assert login_page.is_logged_in
 
 
 class TestIssues(BaseTest):
@@ -79,10 +73,6 @@ class TestIssues(BaseTest):
             while len(TestIssues.issues) > 0:
                 issue = TestIssues.issues.pop()
                 jira.delete_issue(issue)
-
-                # for issue in TestIssues.issues:
-                # assert r.status_code == 204
-            # TestIssues.issues = []
 
     @pytest.mark.parametrize("issue_data", [{"project": "AQAPython (AQAPYTHON)", "summary": "", "type": "Bug"},
                                             {"project": "AQAPython (AQAPYTHON)", "summary": "AlexART - " + "".join([str(x) for x in range(255)]),
@@ -151,6 +141,7 @@ class TestIssues(BaseTest):
         assert len(sp.found_issues) == 1
 
         sp.found_issues[0].select()
+        sp.wait_for_loading()
 
         sp.update(**{"summary": "AlexART - issue_edited_from_ui", "priority": "High"})
 

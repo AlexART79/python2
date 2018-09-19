@@ -31,7 +31,7 @@ class GeneralPage(BasePage):
 
     def create_issue(self, project, summary, type="Bug", description="", priority="Low"):
         self.create_issue_link.click()
-        self.create_issue_dialog.wait_for_display(10)
+        self.create_issue_dialog.wait_to_be_displayed(10)
 
         self.create_issue_dialog.project = project
         self.create_issue_dialog.issue_type = type
@@ -49,14 +49,14 @@ class GeneralPage(BasePage):
     @property
     def aui_message_is_displayed(self):
         try:
-            e = self.aui_message_container.wait_for_display(10)
+            e = self.aui_message_container.wait_to_be_displayed(10)
             return e.is_displayed
         except TimeoutException:
             return False
 
     def go_to_search_page(self):
         self.issues_link.click()
-        self.issues_dropdown_menu.wait_for_display(3)
+        self.issues_dropdown_menu.wait_to_be_displayed(3)
         self.issues_menu_item_search.click()
 
 
@@ -83,7 +83,7 @@ class IssuesSearchPage(GeneralPage):
         self.loading_indicator = Element(self.driver, IssuesSearchPage.loading_locator)
 
     def wait_for_loading(self, timeout=30):
-        self.loading_indicator.wait_to_be_hidden()
+        self.loading_indicator.wait_to_be_hidden(timeout)
         sleep(3)
 
     def search(self, jql):
@@ -94,7 +94,7 @@ class IssuesSearchPage(GeneralPage):
 
     def update(self, summary=None, type=None, priority=None, description=None):
         self.issue_details.open_edit()
-        self.edit_issue_dialog.wait_for_display(10)
+        self.edit_issue_dialog.wait_to_be_displayed(10)
 
         if summary:
             self.edit_issue_dialog.summary = summary
@@ -106,7 +106,7 @@ class IssuesSearchPage(GeneralPage):
             self.edit_issue_dialog.description = description
 
         self.edit_issue_dialog.submit()
-        self.aui_message_container.wait_for_display(10)
+        self.aui_message_container.wait_to_be_displayed(10)
 
     @property
     def found_issues(self):
