@@ -1,11 +1,11 @@
 import json
-from time import sleep
 
 import pytest
-from src.DriverManager import DriverManager
-from src.pages.login_page import LoginPage
-from src.pages.general_page import GeneralPage, DashboardPage, IssuesSearchPage
+from ..DriverManager import DriverManager
+from ..pages.login_page import LoginPage
+from ..pages.general_page import GeneralPage, DashboardPage, IssuesSearchPage
 from ..rest.jira import Jira
+
 from ..rest.issue_info import prep_issues, prep_issue
 
 

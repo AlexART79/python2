@@ -107,6 +107,7 @@ class IssuesSearchPage(GeneralPage):
 
         self.edit_issue_dialog.submit()
         self.aui_message_container.wait_to_be_displayed(10)
+        self.aui_message_container.wait_to_be_hidden()
 
     @property
     def found_issues(self):
