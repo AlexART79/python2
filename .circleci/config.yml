@@ -45,7 +45,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest phase4/ -v -l
+            pytest phase4/ -v -l --rerun-failures 2
 
       - store_artifacts:
           path: test-reports
