@@ -84,6 +84,7 @@ class IssuesSearchPage(GeneralPage):
 
     def wait_for_loading(self, timeout=30):
         self.loading_indicator.wait_to_be_hidden(timeout)
+        sleep(3)
 
     def search(self, jql):
         self.search_field.value = jql
