@@ -76,13 +76,16 @@ class TestIssues(BaseTest):
         if TestIssues.issues:
             jira = Jira()
             jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
-            for issue in TestIssues.issues:
-                r = jira.delete_issue(issue)
-                assert r.status_code == 204
-            TestIssues.issues = []
+            while len(TestIssues.issues) > 0:
+                issue = TestIssues.issues.pop()
+                jira.delete_issue(issue)
 
-    @pytest.mark.parametrize("issue_data", [{"summary": "", "type": "Bug"},
-                                            {"summary": "AlexART - " + "".join([str(x) for x in range(255)]),
+                # for issue in TestIssues.issues:
+                # assert r.status_code == 204
+            # TestIssues.issues = []
+
+    @pytest.mark.parametrize("issue_data", [{"project": "AQAPython (AQAPYTHON)", "summary": "", "type": "Bug"},
+                                            {"project": "AQAPython (AQAPYTHON)", "summary": "AlexART - " + "".join([str(x) for x in range(255)]),
                                              "type": "Bug"}])
     def test_create_issue_negative(self, issue_data, driver):
         # login
@@ -145,7 +148,6 @@ class TestIssues(BaseTest):
         sp = IssuesSearchPage(driver)
 
         sp.search("summary~'AA_issue_to_update' AND issuetype = Bug")
-        sleep(3)
         assert len(sp.found_issues) == 1
 
         sp.found_issues[0].select()

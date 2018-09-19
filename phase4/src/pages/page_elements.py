@@ -60,9 +60,6 @@ class Element(object):
     def wait_to_be_enabled(self, timeout=30):
         return WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(self.locator))
 
-    def wait_for_removal(self, timeout=30):
-        return WebDriverWait(self.driver, timeout).until_not(EC.presence_of_element_located(self.locator))
-
 
 class InputElement(Element):
     @property
