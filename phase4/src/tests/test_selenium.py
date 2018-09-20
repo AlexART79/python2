@@ -1,12 +1,9 @@
 import json
-
 import pytest
-from ..DriverManager import DriverManager
-from ..pages.login_page import LoginPage
-from ..pages.general_page import GeneralPage, DashboardPage, IssuesSearchPage
-from ..rest.jira import Jira
 
-from ..rest.issue_info import prep_issues, prep_issue
+from ..DriverManager import DriverManager
+from ..pages.pages import GeneralPage, DashboardPage, IssuesSearchPage, LoginPage
+from ..rest.jira import Jira, prep_issues, prep_issue
 
 
 # cleanup before test (remove leftovers from previous runs, if exists)
@@ -127,7 +124,12 @@ class TestIssues(BaseTest):
 
         assert len(sp.found_issues) == search_data["res"]
 
-    def test_update_issue(self, driver, prep_issue):
+    @pytest.mark.parametrize("issue_data",
+                             [{"summary": "AlexART - issue_edited_from_ui 1",
+                               "description": "Description was updated from UI"},
+                              {"summary": "AlexART - issue_edited_from_ui 2",
+                               "priority": "High"}])
+    def test_update_issue(self, driver, prep_issue, issue_data):
         login_page = LoginPage(driver)
         login_page.go("http://jira.hillel.it:8080/")
         login_page.login("Alexander_Artemov", "Alexander_Artemov")
@@ -143,6 +145,6 @@ class TestIssues(BaseTest):
         sp.found_issues[0].select()
         sp.wait_for_loading()
 
-        sp.update(**{"summary": "AlexART - issue_edited_from_ui", "priority": "High"})
+        sp.update(**issue_data)
 
-        assert "AlexART - issue_edited_from_ui" == sp.issue_details.summary
+        assert issue_data["summary"] == sp.issue_details.summary

@@ -3,10 +3,21 @@ from time import sleep
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
-from src.pages.base_page import BasePage
-from src.pages.page_elements import Element, InputElement, IssueListItem, IssueDetails, \
-    CreateEditIssueDialog
+from .page_elements import Element, CreateEditIssueDialog, InputElement, IssueDetails, IssueListItem
+
+
+class BasePage(object):
+    def __init__(self, driver):
+        self.driver = driver
+
+    def go(self, url):
+        self.driver.get(url)
+
+    def is_title_contains(self, title):
+        return title in self.driver.title
 
 
 class GeneralPage(BasePage):
@@ -125,3 +136,45 @@ class IssuesSearchPage(GeneralPage):
             pass
 
         return l
+
+
+class LoginPage(BasePage):
+    login_form_username = (By.XPATH, "//input[@id='login-form-username']")
+    login_form_password = (By.XPATH, "//input[@id='login-form-password']")
+    login_form_login_btn = (By.XPATH, "//*[@id='login']")
+    login_form_error_message = (By.XPATH, "//div[@id='usernameerror']/p")
+
+    details_user_fullname = (By.XPATH, "//a[@id='header-details-user-fullname']")
+
+    def __init__(self, driver):
+        BasePage.__init__(self, driver)
+
+        self.login_text = InputElement(self.driver, LoginPage.login_form_username)
+        self.password_text = InputElement(self.driver, LoginPage.login_form_password)
+        self.login_btn = InputElement(self.driver, LoginPage.login_form_login_btn)
+
+    def login(self, username, password):
+        self.login_text.value = username
+        self.password_text.value = password
+
+        self.login_btn.click()
+
+    @property
+    def is_logged_in(self):
+        try:
+            details_user_fullname = WebDriverWait(self.driver, 30).until(
+                EC.visibility_of_element_located(LoginPage.details_user_fullname))
+
+            return details_user_fullname.is_displayed()
+        except TimeoutException:
+            return False
+
+    @property
+    def login_error_message(self):
+        try:
+            w = WebDriverWait(self.driver, 30).until(
+                EC.visibility_of_element_located(LoginPage.login_form_error_message))
+
+            return w.text
+        except TimeoutException:
+            return ""
