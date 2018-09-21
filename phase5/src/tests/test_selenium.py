@@ -49,6 +49,7 @@ class TestLogin(BaseTest):
     @allure.story('Login')
     @allure.title("Test login attempt with wrong credentials")
     @allure.severity(allure.severity_level.NORMAL)
+    @pytest.mark.uitest
     @pytest.mark.parametrize("login_data", [("alex_art", "test"),
                                             ("alex_art", ""),
                                             ("", ""),
@@ -67,6 +68,7 @@ class TestLogin(BaseTest):
     @allure.story('Login')
     @allure.title("Test login attempt with correct username and password")
     @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.uitest
     def test_login_correct(self, driver):
         login_page = LoginPage(driver)
         login_page.go("http://jira.hillel.it:8080/")
@@ -94,6 +96,7 @@ class TestIssues(BaseTest):
     @allure.story('Create issue')
     @allure.title("Test create issue attempts with wrong data (no summary, summary too long etc.)")
     @allure.severity(allure.severity_level.NORMAL)
+    @pytest.mark.uitest
     @pytest.mark.parametrize("issue_data", [{"project": "AQAPython (AQAPYTHON)", "summary": "", "type": "Bug"},
                                             {"project": "AQAPython (AQAPYTHON)", "summary": "AlexART - " + "".join([str(x) for x in range(255)]),
                                              "type": "Bug"}])
@@ -116,6 +119,7 @@ class TestIssues(BaseTest):
     @allure.story('Create issue')
     @allure.title("Test create issue with correct data")
     @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.uitest
     @pytest.mark.parametrize("issue_data", [{"project": "AQAPython (AQAPYTHON)", "summary": "AlexART - Test Story", "type": "Story",
                                              "description": "this is a test Story"},
                                             {"project": "AQAPython (AQAPYTHON)", "summary": "AlexART - Test Bug", "type": "Bug",
@@ -144,6 +148,7 @@ class TestIssues(BaseTest):
     @allure.story('Search')
     @allure.title("Test search issues with different search conditions")
     @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.uitest
     @pytest.mark.parametrize("search_data", [{"jql": "summary~'AA_issue_to_find'", "res": 5},
                                              {"jql": "summary~'AA_issue_to_find' AND issuetype = Story", "res": 1},
                                              {"jql": "summary~'AA_issue_to_find' AND issuetype = Epic", "res": 0}])
@@ -168,6 +173,7 @@ class TestIssues(BaseTest):
     @allure.story('Edit issue')
     @allure.title("Test update existing issue (summary/description/priority etc.)")
     @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.uitest
     @pytest.mark.parametrize("issue_data",
                              [{"summary": "AlexART - issue_edited_from_ui 1",
                                "description": "Description was updated from UI"},
