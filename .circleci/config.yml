@@ -64,6 +64,7 @@ jobs:
           command: |
             mkdir artifacts            
             zip -r artifacts/test_report.zip test_report
+            cp test_results/results.xml artifacts/results.xml
       
       - store_test_results:
           path: test_results/results.xml          
