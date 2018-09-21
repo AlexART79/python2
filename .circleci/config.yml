@@ -62,7 +62,7 @@ jobs:
       - run:
           name: archive results
           command: |
-            mrdir artifacts
+            mkdir artifacts
             zip -r artifacts/test_results.zip test_results
             zip -r artifacts/test_report.zip test_reports
       
