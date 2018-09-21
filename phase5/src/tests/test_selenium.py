@@ -58,7 +58,7 @@ class TestLogin(BaseTest):
         login_page.go("http://jira.hillel.it:8080/")
         login_page.login(*login_data)
 
-        allure.attach(driver.get_screenshot_as_png(), name="screen", attachment_type=AttachmentType.PNG)
+        allure.attach(driver.get_screenshot_as_png(), name="Screenshot", attachment_type=AttachmentType.PNG)
         assert "your username and password are incorrect" in login_page.login_error_message
 
     @allure.step
@@ -73,7 +73,7 @@ class TestLogin(BaseTest):
 
         login_page.login("Alexander_Artemov", "Alexander_Artemov")
 
-        allure.attach(driver.get_screenshot_as_png(), name="screen", attachment_type=AttachmentType.PNG)
+        allure.attach(driver.get_screenshot_as_png(), name="Screenshot", attachment_type=AttachmentType.PNG)
         assert login_page.is_logged_in
 
 
@@ -107,7 +107,7 @@ class TestIssues(BaseTest):
         dashboard_page = GeneralPage(driver)
         dashboard_page.create_issue(**issue_data)
 
-        allure.attach(driver.get_screenshot_as_png(), name="screen", attachment_type=AttachmentType.PNG)
+        allure.attach(driver.get_screenshot_as_png(), name="Screenshot", attachment_type=AttachmentType.PNG)
         assert dashboard_page.create_issue_dialog.error_message_is_displayed
 
     @allure.step
@@ -130,7 +130,7 @@ class TestIssues(BaseTest):
         dashboard_page = GeneralPage(driver)
         issue_key = dashboard_page.create_issue(**issue_data)
 
-        allure.attach(driver.get_screenshot_as_png(), name="screen", attachment_type=AttachmentType.PNG)
+        allure.attach(driver.get_screenshot_as_png(), name="Screenshot", attachment_type=AttachmentType.PNG)
         # assert dashboard_page.aui_message_is_displayed
         assert issue_key is not None
 
@@ -159,7 +159,7 @@ class TestIssues(BaseTest):
 
         sp.search(search_data["jql"])
 
-        allure.attach(driver.get_screenshot_as_png(), name="screen", attachment_type=AttachmentType.PNG)
+        allure.attach(driver.get_screenshot_as_png(), name="Screenshot", attachment_type=AttachmentType.PNG)
         assert len(sp.found_issues) == search_data["res"]
 
     @allure.step
@@ -191,5 +191,5 @@ class TestIssues(BaseTest):
 
         sp.update(**issue_data)
 
-        allure.attach(driver.get_screenshot_as_png(), name="screen", attachment_type=AttachmentType.PNG)
+        allure.attach(driver.get_screenshot_as_png(), name="Screenshot", attachment_type=AttachmentType.PNG)
         assert issue_data["summary"] == sp.issue_details.summary
