@@ -35,7 +35,13 @@ jobs:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
-            
+
+      - run:
+          name: download allure
+          command: |
+            curl https://qameta.bintray.com/generic/io/qameta/allure/allure/2.7.0/allure-2.7.0.zip --output /tmp/allure-2.7.0.zip
+            unzip /tmp/allure-2.7.0.zip            
+          
       # run tests
       # this example uses Django's built-in test-runner
       # other common Python testing frameworks include pytest and nose
@@ -47,10 +53,19 @@ jobs:
             . venv/bin/activate
             pytest phase5/ -v -l --reruns 2 --alluredir=test_results --junitxml=test_results/results.xml       
           
+      - run:
+          name: generate report
+          command: |
+            /tmp/allure-2.7.0/bin/allure generate test_results -o test_report
+            
+          when: always
+          
       - store_test_results:
           path: test_results
+          path: test_report
           
       - store_artifacts:
           path: test_results
+          path: test_report
           
           
