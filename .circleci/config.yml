@@ -39,8 +39,8 @@ jobs:
       - run:
           name: download allure
           command: |
-            curl -LO https://qameta.bintray.com/generic/io/qameta/allure/allure/2.7.0/allure-2.7.0.zip --output /tmp/allure-2.7.0.zip
-            unzip /tmp/allure-2.7.0.zip            
+            curl -LO https://qameta.bintray.com/generic/io/qameta/allure/allure/2.7.0/allure-2.7.0.zip --output allure-2.7.0.zip
+            unzip allure-2.7.0.zip            
           
       # run tests
       # this example uses Django's built-in test-runner
@@ -56,8 +56,7 @@ jobs:
       - run:
           name: generate report
           command: |
-            /tmp/allure-2.7.0/bin/allure generate test_results -o test_report
-            
+            ./allure-2.7.0/bin/allure generate test_results -o test_report            
           when: always
           
       - store_test_results:
