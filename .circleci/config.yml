@@ -35,7 +35,14 @@ jobs:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
-        
+      
+      - run:
+          name: install allure
+          command: |
+            sudo apt-add-repository ppa:qameta/allure
+            sudo apt-get update
+            sudo apt-get install allure
+      
       # run tests!
       # this example uses Django's built-in test-runner
       # other common Python testing frameworks include pytest and nose
@@ -45,9 +52,13 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest phase4/ -v -l --reruns 2
-
+            pytest phase5/ -v -l --reruns 2 --alluredir=test_results --junitxml=test_results/results.xml
+       
+          when: always
+      - store_test_results:
+          path: test_results
+          
       - store_artifacts:
-          path: test-reports
-          destination: test-reports
+          path: test_results
+          
           

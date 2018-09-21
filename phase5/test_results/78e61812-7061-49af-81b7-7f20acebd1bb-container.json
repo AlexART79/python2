@@ -1,0 +1,1 @@
+{"uuid": "0bc5ab32-e462-4c6c-92d2-a29bc7fb3295", "children": ["21183075-0f33-4f75-9ec6-4726b68cab01"], "befores": [{"name": "jira_rest", "status": "passed", "start": 1537449439228, "stop": 1537449439621}], "afters": [{"name": "jira_rest::0", "status": "passed", "start": 1537449476790, "stop": 1537449476790}], "start": 1537449439228, "stop": 1537449476790}
