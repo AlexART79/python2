@@ -1,6 +1,10 @@
+allure-behave==2.5.1
+allure-pytest==2.5.1
+allure-python-commons==2.5.1
 atomicwrites==1.2.1
 attrs==18.2.0
 auth==0.5.3
+behave==1.2.6
 blinker==1.4
 certifi==2018.8.24
 chardet==3.0.4
@@ -25,3 +29,5 @@ requests==2.19.1
 six==1.11.0
 urllib3==1.23
 Werkzeug==0.14.1
+webdriver-manager==1.7
+selenium==3.14.0
