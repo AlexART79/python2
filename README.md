@@ -6,12 +6,12 @@ Test suite contains 2 kinds of tests that are marked with appropriate tags:
 * UI - selenium UI tests
 * API - API tests
 
-There are also marks on the tests that allow users to run just particular categories:
+There are also marks on the tests that allow users to run particular categories:
 * apitest
 * uitest 
 
 ###Usage
-pytest -m \<category\>
+<code>pytest -m \<category\></code>
 
 ##Report
 To collect allure test results after test run, run the tests with the <b>--alluredir=test_results"</b> argument:
