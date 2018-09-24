@@ -125,7 +125,6 @@ class TestIssue:
     @allure.story('Search issues (no results)')
     @allure.severity(allure.severity_level.TRIVIAL)
     @pytest.mark.apitest
-    @pytest.mark.flaky(reruns=3)
     def test_search_no_results(self):
         jira = Jira()
         jira.authenticate("Alexander_Artemov", "Alexander_Artemov")
@@ -136,6 +135,3 @@ class TestIssue:
 
         data = json.loads(r.content)
         assert data["total"] == 0
-
-        # random failing test (for re-runs)
-        assert random.choice([True, False])
