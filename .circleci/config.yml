@@ -51,7 +51,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            behave -v -f allure_behave.formatter:AllureFormatter -o test_results src/features --no-capture                               
+            behave -v -f allure_behave.formatter:AllureFormatter -o test_results phase7_behave/src/features --no-capture                               
           
       - run:
           name: generate report
