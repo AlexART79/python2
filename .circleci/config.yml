@@ -51,7 +51,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest phase5/ -v -l --reruns 2 --alluredir=test_results --junitxml=test_results/results.xml       
+            behave -v -f allure_behave.formatter:AllureFormatter -o test_results src/features --no-capture                               
           
       - run:
           name: generate report
@@ -63,11 +63,7 @@ jobs:
           name: archive results
           command: |
             mkdir artifacts            
-            zip -r artifacts/test_report.zip test_report
-            cp test_results/results.xml artifacts/results.xml
-      
-      - store_test_results:
-          path: test_results/results.xml          
+            zip -r artifacts/test_report.zip test_report            
           
       - store_artifacts:
           path: artifacts
