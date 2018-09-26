@@ -1,7 +1,7 @@
 import allure
 from behave import *
-from src.features.steps.common import transform_parameters
-from src.pages.pages import LoginPage
+from src import transform_parameters
+from src import LoginPage
 
 
 @allure.step

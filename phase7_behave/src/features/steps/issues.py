@@ -3,10 +3,10 @@ import allure
 
 from behave import *
 
-from src.features.steps.common import transform_parameters
-from src.pages.pages import GeneralPage, DashboardPage, IssuesSearchPage
-from src.rest.jira import Jira
-from src.rest.support import IssueInfo
+from src import transform_parameters
+from src import GeneralPage, DashboardPage, IssuesSearchPage
+from src import Jira
+from src import IssueInfo
 
 
 @allure.step
