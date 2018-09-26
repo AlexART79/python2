@@ -51,6 +51,9 @@ class GeneralPage(BasePage):
         self.create_issue_dialog.priority = priority
         self.create_issue_dialog.submit()
 
+        return self.get_created_issue_key()
+
+    def get_created_issue_key(self):
         if self.aui_message_is_displayed:
             e = Element(self.driver, GeneralPage.aui_message_issue_link_locator)
             return e.text[:e.text.index(' ')]
@@ -69,6 +72,9 @@ class GeneralPage(BasePage):
         self.issues_link.click()
         self.issues_dropdown_menu.wait_to_be_displayed(3)
         self.issues_menu_item_search.click()
+
+    def open_create_issue_dialog(self):
+        self.create_issue_link.click()
 
 
 class DashboardPage(GeneralPage):
@@ -102,6 +108,12 @@ class IssuesSearchPage(GeneralPage):
         self.search_field.send_keys(Keys.RETURN)
 
         self.wait_for_loading()
+
+    def fill_search_field(self, value):
+        self.search_field.value = value
+
+    def press_enter(self):
+        self.search_field.send_keys(Keys.RETURN)
 
     def update(self, summary=None, type=None, priority=None, description=None):
         self.issue_details.open_edit()

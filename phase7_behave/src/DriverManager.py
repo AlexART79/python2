@@ -1,5 +1,4 @@
 from selenium import webdriver
-#from seleniumwire import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 
