@@ -3,12 +3,11 @@ import logging
 import allure
 
 from allure_commons.types import AttachmentType
-from behave import use_fixture, fixture
+from behave import fixture
 from behave.model_core import Status
 
-from src.DriverManager import DriverManager
-from src.rest import jira
-from src.rest.jira import Jira
+from ..DriverManager import DriverManager
+from ..rest.jira import Jira
 
 logging.basicConfig(level=logging.DEBUG)
 
