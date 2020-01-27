@@ -1,7 +1,7 @@
 [![CircleCI](https://circleci.com/gh/AlexART79/python2/tree/phase5.svg?style=svg)](https://circleci.com/gh/AlexART79/python2/tree/phase5)
 
-#Python course: phase 5/6
-##Tags
+<h1>Python course: phase 5/6</h1>
+<h2>Tags</h2>
 Test suite contains 2 kinds of tests that are marked with appropriate tags:
 * UI - selenium UI tests
 * API - API tests
@@ -10,10 +10,10 @@ There are also marks on the tests that allow users to run particular categories:
 * apitest
 * uitest 
 
-###Usage
+<h2>Usage</h2>
 <code>pytest -m \<category\></code>
 
-##Report
+<h2>Report</h2>
 To collect allure test results after test run, run the tests with the <b>--alluredir=test_results"</b> argument:
 <br /><code>pytest -m \<category\> --alluredir=path_to_results</code>
 
