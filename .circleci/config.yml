@@ -39,7 +39,7 @@ jobs:
       - run:
           name: download allure
           command: |
-            curl -LO https://qameta.bintray.com/generic/io/qameta/allure/allure/2.7.0/allure-2.7.0.zip --output allure-2.7.0.zip
+            curl -LO https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.13.1/allure-commandline-2.13.1.zip --output allure-2.7.0.zip
             unzip allure-2.7.0.zip            
           
       # run tests
