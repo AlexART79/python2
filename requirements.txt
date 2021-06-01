@@ -27,7 +27,7 @@ pytest-rerunfailures==4.1
 python-mimeparse==1.6.0
 requests==2.19.1
 six==1.11.0
-urllib3==1.23
+urllib3==1.26.5
 Werkzeug==0.15.3
 webdriver-manager==1.7
 selenium==3.14.0
